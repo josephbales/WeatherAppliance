@@ -1,0 +1,6 @@
+appName: WeatherAppliance
+logLevel: ALL
+
+ApiWeatherGov:
+  baseUrl: "https://api.weather.gov"
+  authEnvVariable: "JNB_APP_WEATHERAPPLIANCE_APIWEATHERGOV_VALUE"

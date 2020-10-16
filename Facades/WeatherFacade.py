@@ -2,12 +2,13 @@ from Services.WeatherGovService import WeatherGovService
 from Models.CurrentConditions import CurrentConditions
 
 
-class WeatherFacade():
+class WeatherFacade(object):
+
+    def __init__(self, config):
+        self._config = config
 
     def get_current_conditions(self, station):
-        base_url = 'https://api.weather.gov'
-        headers = {'Authorization': '(josephbales.com, joey@josephbales.com)'}
-        wgs = WeatherGovService(base_url=base_url, default_headers=headers)
+        wgs = WeatherGovService(config=self._config)
         response = wgs.get_current_conditions_by_station(station)
         cc = CurrentConditions()
         tempC = response['properties']['temperature']['value']
