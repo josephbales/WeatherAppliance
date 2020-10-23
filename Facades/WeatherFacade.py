@@ -10,16 +10,5 @@ class WeatherFacade(object):
     def get_current_conditions(self, station):
         wgs = WeatherGovService(config=self._config)
         response = wgs.get_current_conditions_by_station(station)
-        cc = CurrentConditions()
-        tempC = response['properties']['temperature']['value']
-        relHum = response['properties']['relativeHumidity']['value']
-        desc = response['properties']['textDescription']
-        bp = response['properties']['barometricPressure']['value']
-        cc.tempurature_f = "{:.0f}".format((tempC * 9/5) + 32)
-        cc.tempurature_c = "{:.0f}".format(tempC)
-        cc.station = station
-        cc.relative_humidity = "{:.0f}%".format(relHum)
-        cc.description = desc
-        cc.barometricPressure = "{:.2f} inches of Hg".format(bp / 3386)
-        return cc
+        return CurrentConditions(response, station)
 

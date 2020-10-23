@@ -1,15 +1,10 @@
-class CurrentConditions:
+class CurrentConditions(object):
 
-    def __init__(self,
-                 station=None,
-                 tempurature_f=None,
-                 tempurature_c=None,
-                 description=None,
-                 relative_humidity=None,
-                 barometricPressure=None):
+    def __init__(self, data, station=None):
         self.station = station
-        self.tempurature_f = tempurature_f
-        self.tempurature_c = tempurature_c
-        self.description = description
-        self.relative_humidity = relative_humidity
-        self.barometricPressure = barometricPressure
+        self.tempurature_c = "{:.0f}".format(data['properties']['temperature']['value'])
+        self.tempurature_f = "{:.0f}".format((data['properties']['temperature']['value'] * 9/5) + 32)
+        self.description = data['properties']['textDescription']
+        self.relative_humidity = "{:.0f}%".format(data['properties']['relativeHumidity']['value'])
+        self.barometricPressure = "{:.2f} inches of Hg".format(data['properties']['barometricPressure']['value'] / 3386)
+

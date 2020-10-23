@@ -6,7 +6,7 @@ class WeatherGovService(object):
 
     def __init__(self, config):
         self._base_url = config['ApiWeatherGov']['baseUrl']
-        self._headers = {'Authorization': os.environ.get(config['ApiWeatherGov']['authEnvVariable'])}
+        self._headers = {'User-Agent': os.environ.get(config['ApiWeatherGov']['authEnvVariable'])}
 
     def get_alerts_by_zone(self, zone):
         url = f"/alerts/active/zone/{zone}"
@@ -14,6 +14,10 @@ class WeatherGovService(object):
     
     def get_current_conditions_by_station(self, station):
         url = f"/stations/{station}/observations/latest"
+        return self.__get_request__(url)
+
+    def get_station_info(self, station):
+        url = f"/stations/{station}"
         return self.__get_request__(url)
 
     def get_icon_by_url(self, url):
