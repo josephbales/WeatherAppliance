@@ -4,9 +4,9 @@ import requests
 
 class WeatherGovService(object):
 
-    def __init__(self, config):
-        self._base_url = config['ApiWeatherGov']['baseUrl']
-        self._headers = {'User-Agent': os.environ.get(config['ApiWeatherGov']['authEnvVariable'])}
+    def __init__(self, base_url, default_headers):
+        self._base_url = base_url
+        self._headers = default_headers
 
     def get_alerts_by_zone(self, zone):
         url = f"/alerts/active/zone/{zone}"
@@ -25,5 +25,6 @@ class WeatherGovService(object):
         return response
         
     def __get_request__(self, url, params=None):
+        print(self._base_url + url)
         response = requests.get(self._base_url + url, headers=self._headers, params=params)
         return response.json()

@@ -5,11 +5,15 @@ import svgwrite as draw
 class DrawingFacade:
 
     def draw_sample_svg(self):
-        desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop') + os.path.sep
-        main_image = desktop + 'test.svg'
-        bottom_image = desktop + 'bottom.svg'
-        left_image = desktop + 'left.svg'
-        right_image = desktop + 'right.svg'
+        if os.name == 'nt':
+            home_dir = os.environ['USERPROFILE']
+        else:
+            home_dir = os.environ['HOMEPATH']
+        desktop = os.path.join(os.path.join(home_dir), 'Desktop')
+        main_image = os.path.join(desktop, 'test.svg')
+        bottom_image = os.path.join(desktop, 'bottom.svg')
+        left_image = os.path.join(desktop, 'left.svg')
+        right_image = os.path.join(desktop, 'right.svg')
         print(main_image)
 
         bottom_bar = draw.Drawing(bottom_image, size=(640, 84), x=0, y=0)
