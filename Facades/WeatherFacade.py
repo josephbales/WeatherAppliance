@@ -1,4 +1,4 @@
-import os
+import os, getpass
 from Services.WeatherGovService import WeatherGovService
 from Models.CurrentConditions import CurrentConditions
 
@@ -6,8 +6,6 @@ from Models.CurrentConditions import CurrentConditions
 class WeatherFacade(object):
 
     def __init__(self, config):
-        print(config['ApiWeatherGov']['authEnvVariable'])
-        print(os.environ.get(config['ApiWeatherGov']['authEnvVariable']))
         self._base_url = config['ApiWeatherGov']['baseUrl']
         self._default_headers = {'User-Agent': os.environ.get(config['ApiWeatherGov']['authEnvVariable'])}
 

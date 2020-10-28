@@ -25,6 +25,6 @@ class WeatherGovService(object):
         return response
         
     def __get_request__(self, url, params=None):
-        print(self._base_url + url)
+        # print(self._base_url + url)
         response = requests.get(self._base_url + url, headers=self._headers, params=params)
         return response.json()

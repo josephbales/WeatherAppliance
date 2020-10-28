@@ -7,7 +7,7 @@ file = open('config.yaml', 'r')
 config = yaml.load(file, Loader=yaml.FullLoader)
 
 wf = WeatherFacade(config)
-conditions = wf.get_current_conditions('KBNA')
+conditions = wf.get_current_conditions(config['ApiWeatherGov']['weatherStation'])
 print(conditions.tempurature_f)
 
 df = DrawingFacade()
