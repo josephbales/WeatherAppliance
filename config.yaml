@@ -1,7 +1,12 @@
 appName: WeatherAppliance
 logLevel: ALL
 
-ApiWeatherGov:
-  baseUrl: "https://api.weather.gov"
-  authEnvVariable: "JNB_APP_WA_APIWEATHERGOV_AUTHKEY"
-  weatherStation: "KBNA"
+apiWeatherGov:
+  baseUrl: https://api.weather.gov
+  authEnvVariable: JNB_APP_WA_APIWEATHERGOV_AUTHKEY
+  weatherStation: KBNA
+
+imageParams:
+  width: 640
+  height: 384
+  profile: tiny
