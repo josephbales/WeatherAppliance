@@ -8,7 +8,7 @@ config = yaml.load(file, Loader=yaml.FullLoader)
 
 wf = WeatherFacade(config)
 conditions = wf.get_current_conditions(config['apiWeatherGov']['weatherStation'])
-print(conditions.tempurature_f)
+print(conditions.conditions_desc)
 
 df = DrawingFacade(config)
 df.draw_sample_svg()

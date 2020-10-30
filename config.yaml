@@ -5,6 +5,7 @@ apiWeatherGov:
   baseUrl: https://api.weather.gov
   authEnvVariable: JNB_APP_WA_APIWEATHERGOV_AUTHKEY
   weatherStation: KBNA
+  weatherZone: TNZ027
 
 imageParams:
   width: 640
