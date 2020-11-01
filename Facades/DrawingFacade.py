@@ -51,12 +51,25 @@ class DrawingFacade(object):
         #                                dominant_baseline='middle',
         #                                text_anchor='middle'))
         # bottom_bar.save()
-        left_top_g = svgwrite.container.Group()
+
+        main_drawing = svgwrite.Drawing(main_image, size=(640, 384))
+
+        left_top_g = main_drawing.g() # Can we method chain these and be less verbose?
 
         bottom_g = svgwrite.container.Group()
 
         left_top_svg = svgwrite.container.SVG(insert=(0, 0), size=(400, 300))
-        # ideally would rather read this SVG as XML and insert it here?
+        # For the SVG image here I should just use the XML files in the images folder of this project, read the file,
+        # parse it for the path elements and extract the d attributes. I can then use that to reconstruct and svg using
+        # the svgwrite library with the parameters that I need.
+        # Image files will need to be renamed in some uniform fashion, probably keying of METAR data so that I can
+        # select the appropriate image from the list of names. That logic should probably go somewhere else.
+        # I'd like to keep this drawing class mostly focused on drawing tasks only and it will just take the data
+        # passed to it and make the drawings.
+        # Example: it will accept parameters of temperature, conditions message, station id, datetime, image path,
+        # and optional message for the alert area if there are no alerts to display there
+        # Alert message will be handled by a different method so that just that piece is in the image so that it can be
+        # displayed in RED.
         conditions_image = svgwrite.image.Image(href='C:\\Users\\josep\\source\\repos\\WeatherAppliance\\images\\drop_weather_cloud_rain_forecasticon.svg')
         left_top_svg.add(conditions_image)
         left_top_g.add(left_top_svg)
@@ -80,7 +93,7 @@ class DrawingFacade(object):
         right_top_svg.add(rt_top_g)
         right_top_svg.add(rt_bottom_g)
 
-        main_drawing = svgwrite.Drawing(main_image, size=(640, 384))
+
         main_drawing.viewbox(minx=0, miny=0, width=640, height=384)
         main_drawing.add(main_drawing.polyline(points=[(0, 0), (640, 0), (640, 384), (0, 384), (0, 0)], stroke='black',
                                                stroke_width=10, fill='none'))
