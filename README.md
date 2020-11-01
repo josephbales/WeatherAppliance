@@ -6,7 +6,9 @@ A set of python scripts I plan to use to drive a little weather display applianc
 Cut me some slack, I am a C# developer trying to write python 😃
 
 - sudo apt-get install libcairo2
-- pip3 install [drawSvg](https://pypi.org/project/drawSvg/)
+- pip3 install [svgwrite](https://pypi.org/project/svgwrite/)
+- [svgwrite docs](https://svgwrite.readthedocs.io/en/latest/overview.html)
+- [svgwrite source](https://github.com/mozman/svgwrite)
 - icons (https://www.iconfinder.com/iconsets/good-weather-1) (https://creativecommons.org/licenses/by/3.0/)
 
 ### TODOs
