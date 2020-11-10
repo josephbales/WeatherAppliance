@@ -1,19 +1,15 @@
-appName: WeatherAppliance
-logLevel: ALL
+appName: "WeatherAppliance"
+logLevel: "ALL"
 
-apiWeatherGov:
-  baseUrl: https://api.weather.gov
-  authEnvVariable: JNB_APP_WA_APIWEATHERGOV_AUTHKEY
-  weatherStation: KBNA
-  weatherZone: TNZ027
-
-apiOpenWeather:
-  baseUrl: https://api.openweathermap.org
-  authEnvVariable: JNB_APP_WA_OPENWEATHERMAP_AUTHKEY
-  zipCode: 37076
-  countryCode: US
+weatherApi:
+  baseUrl: "https://api.openweathermap.org"
+  authEnvVariable: "JNB_APP_WA_OPENWEATHERMAP_AUTHKEY"
+  zipCode: "87101"
+  countryCode: "US"
+  iconUrl: "http://openweathermap.org/img/wn"
+  iconSuffix: "@2x.png"
 
 imageParams:
-  width: 640
-  height: 384
-  profile: tiny
+  width: "640"
+  height: "384"
+  profile: "tiny"
