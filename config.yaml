@@ -7,6 +7,12 @@ apiWeatherGov:
   weatherStation: KBNA
   weatherZone: TNZ027
 
+apiOpenWeather:
+  baseUrl: https://api.openweathermap.org
+  authEnvVariable: JNB_APP_WA_OPENWEATHERMAP_AUTHKEY
+  zipCode: 37076
+  countryCode: US
+
 imageParams:
   width: 640
   height: 384
