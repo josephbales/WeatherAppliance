@@ -4,8 +4,6 @@ logLevel: "ALL"
 weatherApi:
   baseUrl: "https://api.openweathermap.org"
   authEnvVariable: "JNB_APP_WA_OPENWEATHERMAP_AUTHKEY"
-  zipCode: "87101"
-  countryCode: "US"
   iconUrl: "http://openweathermap.org/img/wn"
   iconSuffix: "@2x.png"
 
@@ -13,3 +11,20 @@ imageParams:
   width: "640"
   height: "384"
   profile: "tiny"
+
+locations:
+  nsh:
+    zipCode: "37076"
+    lat: "36.18"
+    lon: "-86.60"
+    countryCode: "US"
+  abq:
+    zipCode: "87101"
+    lat: "35.20"
+    lon: "-106.64"
+    countryCode: "US"
+  tby:
+    zipCode: "33619"
+    lat: "27.946"
+    lon: "-82.375"
+    countryCode: "US"
