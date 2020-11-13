@@ -27,11 +27,12 @@ class ImageGenerator(object):
         return main_drawing
 
     def draw_sample_svg(self):
-        if os.name == 'nt':
-            home_dir = os.environ['USERPROFILE']
-        else:
-            home_dir = "/mnt/c/Users/josep"
-        desktop = os.path.join(os.path.join(home_dir), 'Desktop')
+        # if os.name == 'nt':
+        #     home_dir = os.environ['USERPROFILE']
+        # else:
+        #     home_dir = "/mnt/c/Users/josep"
+        # desktop = os.path.join(os.path.join(home_dir), 'Desktop')
+        desktop = '/home/jbales/dev/test_images'
 
         main_image = os.path.join(desktop, 'test.svg')
         # bottom_image = os.path.join(desktop, 'bottom.svg')

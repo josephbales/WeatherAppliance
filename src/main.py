@@ -1,8 +1,7 @@
 import json, os, time, yaml
 
-from src.conditions_and_alerts import conditions_and_alerts_from_dict
-from src.current_conditions import current_conditions_from_dict
-from src.image_generation import ImageGenerator
+from src.models.conditions_and_alerts import conditions_and_alerts_from_dict
+from src.image_generator import ImageGenerator
 from src.weather_api import WeatherApi
 
 config_file = open('config.yaml', 'r')

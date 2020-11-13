@@ -8,19 +8,13 @@
 #
 #     result = conditions_and_alerts_from_dict(json.loads(json_string))
 
-from dataclasses import dataclass
-from typing import Optional, Any, List, TypeVar, Callable, Type, cast
 
-
-T = TypeVar("T")
-
-
-def from_str(x: Any) -> str:
+def from_str(x):
     assert isinstance(x, str)
     return x
 
 
-def from_none(x: Any) -> Any:
+def from_none(x):
     assert x is None
     return x
 
@@ -34,41 +28,41 @@ def from_union(fs, x):
     assert False
 
 
-def from_int(x: Any) -> int:
+def from_int(x):
     assert isinstance(x, int) and not isinstance(x, bool)
     return x
 
 
-def from_float(x: Any) -> float:
+def from_float(x):
     assert isinstance(x, (float, int)) and not isinstance(x, bool)
     return float(x)
 
 
-def to_float(x: Any) -> float:
+def to_float(x):
     assert isinstance(x, float)
     return x
 
 
-def from_list(f: Callable[[Any], T], x: Any) -> List[T]:
+def from_list(f, x):
     assert isinstance(x, list)
     return [f(y) for y in x]
 
 
-def to_class(c: Type[T], x: Any) -> dict:
+def to_class(c, x):
     assert isinstance(x, c)
-    return cast(Any, x).to_dict()
+    return x.to_dict()
 
 
-@dataclass
 class Alert:
-    sender_name: Optional[str] = None
-    event: Optional[str] = None
-    start: Optional[int] = None
-    end: Optional[int] = None
-    description: Optional[str] = None
+    def __init__(self, sender_name, event, start, end, description):
+        self.sender_name = sender_name
+        self.event = event
+        self.start = start
+        self.end = end
+        self.description = description
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Alert':
+    def from_dict(obj):
         assert isinstance(obj, dict)
         sender_name = from_union([from_str, from_none], obj.get("sender_name"))
         event = from_union([from_str, from_none], obj.get("event"))
@@ -77,8 +71,8 @@ class Alert:
         description = from_union([from_str, from_none], obj.get("description"))
         return Alert(sender_name, event, start, end, description)
 
-    def to_dict(self) -> dict:
-        result: dict = {}
+    def to_dict(self):
+        result = {}
         result["sender_name"] = from_union([from_str, from_none], self.sender_name)
         result["event"] = from_union([from_str, from_none], self.event)
         result["start"] = from_union([from_int, from_none], self.start)
@@ -87,31 +81,31 @@ class Alert:
         return result
 
 
-@dataclass
 class Rain:
-    the_1_h: Optional[float] = None
+    def __init__(self, the_1_h):
+        self.the_1_h = the_1_h
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Rain':
+    def from_dict(obj):
         assert isinstance(obj, dict)
         the_1_h = from_union([from_float, from_none], obj.get("1h"))
         return Rain(the_1_h)
 
-    def to_dict(self) -> dict:
-        result: dict = {}
+    def to_dict(self):
+        result = {}
         result["1h"] = from_union([to_float, from_none], self.the_1_h)
         return result
 
 
-@dataclass
 class Weather:
-    id: Optional[int] = None
-    main: Optional[str] = None
-    description: Optional[str] = None
-    icon: Optional[str] = None
+    def __init__(self, id, main, description, icon):
+        self.id = id
+        self.main = main
+        self.description = description
+        self.icon = icon
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Weather':
+    def from_dict(obj):
         assert isinstance(obj, dict)
         id = from_union([from_int, from_none], obj.get("id"))
         main = from_union([from_str, from_none], obj.get("main"))
@@ -119,8 +113,8 @@ class Weather:
         icon = from_union([from_str, from_none], obj.get("icon"))
         return Weather(id, main, description, icon)
 
-    def to_dict(self) -> dict:
-        result: dict = {}
+    def to_dict(self):
+        result = {}
         result["id"] = from_union([from_int, from_none], self.id)
         result["main"] = from_union([from_str, from_none], self.main)
         result["description"] = from_union([from_str, from_none], self.description)
@@ -128,27 +122,27 @@ class Weather:
         return result
 
 
-@dataclass
 class Current:
-    dt: Optional[int] = None
-    sunrise: Optional[int] = None
-    sunset: Optional[int] = None
-    temp: Optional[float] = None
-    feels_like: Optional[float] = None
-    pressure: Optional[int] = None
-    humidity: Optional[int] = None
-    dew_point: Optional[float] = None
-    uvi: Optional[float] = None
-    clouds: Optional[int] = None
-    visibility: Optional[int] = None
-    wind_speed: Optional[float] = None
-    wind_deg: Optional[int] = None
-    wind_gust: Optional[float] = None
-    weather: Optional[List[Weather]] = None
-    rain: Optional[Rain] = None
+    def __init__(self, dt, sunrise, sunset, temp, feels_like, pressure, humidity, dew_point, uvi, clouds, visibility, wind_speed, wind_deg, wind_gust, weather, rain):
+        self.dt = dt
+        self.sunrise = sunrise
+        self.sunset = sunset
+        self.temp = temp
+        self.feels_like = feels_like
+        self.pressure = pressure
+        self.humidity = humidity
+        self.dew_point = dew_point
+        self.uvi = uvi
+        self.clouds = clouds
+        self.visibility = visibility
+        self.wind_speed = wind_speed
+        self.wind_deg = wind_deg
+        self.wind_gust = wind_gust
+        self.weather = weather
+        self.rain = rain
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Current':
+    def from_dict(obj):
         assert isinstance(obj, dict)
         dt = from_union([from_int, from_none], obj.get("dt"))
         sunrise = from_union([from_int, from_none], obj.get("sunrise"))
@@ -168,8 +162,8 @@ class Current:
         rain = from_union([Rain.from_dict, from_none], obj.get("rain"))
         return Current(dt, sunrise, sunset, temp, feels_like, pressure, humidity, dew_point, uvi, clouds, visibility, wind_speed, wind_deg, wind_gust, weather, rain)
 
-    def to_dict(self) -> dict:
-        result: dict = {}
+    def to_dict(self):
+        result = {}
         result["dt"] = from_union([from_int, from_none], self.dt)
         result["sunrise"] = from_union([from_int, from_none], self.sunrise)
         result["sunset"] = from_union([from_int, from_none], self.sunset)
@@ -189,17 +183,17 @@ class Current:
         return result
 
 
-@dataclass
 class ConditionsAndAlerts:
-    lat: Optional[float] = None
-    lon: Optional[float] = None
-    timezone: Optional[str] = None
-    timezone_offset: Optional[int] = None
-    current: Optional[Current] = None
-    alerts: Optional[List[Alert]] = None
+    def __init__(self, lat, lon, timezone, timezone_offset, current, alerts):
+        self.lat = lat
+        self.lon = lon
+        self.timezone = timezone
+        self.timezone_offset = timezone_offset
+        self.current = current
+        self.alerts = alerts
 
     @staticmethod
-    def from_dict(obj: Any) -> 'ConditionsAndAlerts':
+    def from_dict(obj):
         assert isinstance(obj, dict)
         lat = from_union([from_float, from_none], obj.get("lat"))
         lon = from_union([from_float, from_none], obj.get("lon"))
@@ -209,8 +203,8 @@ class ConditionsAndAlerts:
         alerts = from_union([lambda x: from_list(Alert.from_dict, x), from_none], obj.get("alerts"))
         return ConditionsAndAlerts(lat, lon, timezone, timezone_offset, current, alerts)
 
-    def to_dict(self) -> dict:
-        result: dict = {}
+    def to_dict(self):
+        result = {}
         result["lat"] = from_union([to_float, from_none], self.lat)
         result["lon"] = from_union([to_float, from_none], self.lon)
         result["timezone"] = from_union([from_str, from_none], self.timezone)
@@ -220,9 +214,9 @@ class ConditionsAndAlerts:
         return result
 
 
-def conditions_and_alerts_from_dict(s: Any) -> ConditionsAndAlerts:
+def conditions_and_alerts_from_dict(s):
     return ConditionsAndAlerts.from_dict(s)
 
 
-def conditions_and_alerts_to_dict(x: ConditionsAndAlerts) -> Any:
+def conditions_and_alerts_to_dict(x):
     return to_class(ConditionsAndAlerts, x)
