@@ -1,5 +1,8 @@
 appName: "WeatherAppliance"
-logLevel: "ALL"
+logLevel: "DEBUG"
+logFilePath: "/var/log/weather_app.log"
+logFormat: "%(asctime)s %(levelname)s %(module)s: %(message)s"
+tempDirPrefix: "JNB_WA_"
 
 weatherApi:
   baseUrl: "https://api.openweathermap.org"

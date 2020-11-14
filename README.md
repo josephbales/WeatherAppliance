@@ -10,7 +10,6 @@ Cut me some slack, I am a C# developer trying to write python 😃
 - sudo pip3 install [svgwrite](https://pypi.org/project/svgwrite/)
 - [svgwrite docs](https://svgwrite.readthedocs.io/en/latest/overview.html)
 - [svgwrite source](https://github.com/mozman/svgwrite)
-- icons (https://www.iconfinder.com/iconsets/good-weather-1) (https://creativecommons.org/licenses/by/3.0/)
 
 ### TODOs
 - need to create something that handles program flow control, like should the program run, did the 
@@ -19,7 +18,7 @@ run this as a cron job so the program will need to know whether to run again or 
 - need something to control the display, just something that will take images and put them on the screen
 - need decide how I will handle creating the images to draw on the screen, since it is two tones, I will
 need something to create the black image and something to create the red image
-- logging
+- ~~logging~~
 - ~~figure out how to structure this project in a more pythonic way~~
 - tests
 - data retention, do I want to store any data in a database?
