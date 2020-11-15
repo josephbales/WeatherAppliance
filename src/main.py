@@ -1,7 +1,11 @@
-import json, logging, os, tempfile, time, yaml
+import json
+import logging
+import os
+import tempfile
+import yaml
 
-from src.models.conditions_and_alerts import conditions_and_alerts_from_dict
 from src.image_generator import ImageGenerator
+from src.models.conditions_and_alerts import conditions_and_alerts_from_dict
 from src.weather_api import WeatherApi
 
 config_file = open('config.yaml', 'r')

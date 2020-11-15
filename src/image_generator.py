@@ -1,8 +1,12 @@
 import os
 import svgwrite
 
+# For alert messages
+# Bottom message should be no more than 60 characters total. If larger than 60 characters
+# then take 56 characters and append " ..."
+
 STYLES = """.conditions { font-family: sans-serif; font-size: 18px; font-weight: bold; fill: black; }
-.message { font-family: sans-serif; font-size: 18px; font-weight: bold; fill: black; }
+.message { font-family: monospace; font-size: 18px; font-weight: bold; fill: black; }
 .last-updated { font-family: sans-serif; font-size: 12px; font-weight: 900; fill: black; }
 .temperature { font-family: sans-serif; font-size: 80px; font-weight: bold; text-transform: uppercase; fill: black; }
 """

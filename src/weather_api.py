@@ -20,7 +20,6 @@ def get_request_bytes(url, headers=None, params=None):
 class WeatherApi(object):
 
     def __init__(self, **kwargs):
-        super().__init__()
         self.__base_api_url = kwargs.get('base_api_url')
         self.__icon_url = kwargs.get('icon_url')
         self.__icon_suffix = kwargs.get('icon_suffix')
