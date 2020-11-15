@@ -25,7 +25,6 @@ class WeatherApi(object):
         self.__icon_url = kwargs.get('icon_url')
         self.__icon_suffix = kwargs.get('icon_suffix')
         self.__auth_key = kwargs.get('auth_key')
-        print(self.__auth_key)
 
     def get_current_conditions(self, **kwargs):
         zipcode = kwargs.get('zipcode')
