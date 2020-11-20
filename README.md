@@ -5,6 +5,7 @@ A set of python scripts I plan to use to drive a little weather display applianc
 
 Cut me some slack, I am a C# developer trying to write python 😃
 
+- sudo apt install noto-fonts
 - sudo apt-get install libcairo2
 - sudo pip3 install [pyyamml](https://pypi.org/project/PyYAML/)
 - sudo pip3 install [svgwrite](https://pypi.org/project/svgwrite/)
@@ -22,4 +23,17 @@ need something to create the black image and something to create the red image
 - ~~figure out how to structure this project in a more pythonic way~~
 - tests
 - data retention, do I want to store any data in a database?
+- Data in the svg
+  - datetime
+  - tempurature
+  - weather image
+  - weather description (main)
+  - barometric pressure
+  - humidity
+  - feels like temp
+  - wind speed
+  - wind direction
+  - sunrise time
+  - sunset time
+  - alert info or fortune
 

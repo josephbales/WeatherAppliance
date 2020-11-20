@@ -21,7 +21,8 @@ try:
         'base_api_url': config['weatherApi']['baseUrl'],
         'icon_url': config['weatherApi']['iconUrl'],
         'icon_suffix': config['weatherApi']['iconSuffix'],
-        'auth_key': os.environ.get(config['weatherApi']['authEnvVariable'])
+        'auth_key': os.environ.get(config['weatherApi']['authEnvVariable']),
+        'temp_dir': config['tempDir']
     }
 
     ca_params = {
@@ -43,8 +44,11 @@ try:
     print(json.dumps(ca_json))
     ca_result = conditions_and_alerts_from_dict(ca_json)
 
+    image_path = wa.get_weather_icon(icon_code=ca_result.current.weather[0].icon)
+    print(image_path)
+
     df = ImageGenerator(config)
-    df.draw_sample_svg()
+    df.draw_sample_svg(image_path)
 
 except Exception as ex:
     logging.exception(ex)
