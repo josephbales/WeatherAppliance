@@ -13,7 +13,7 @@ weatherApi:
 imageParams:
   width: "640"
   height: "384"
-  profile: "tiny"
+  lineWidth: "5"
 
 locations:
   nsh:

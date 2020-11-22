@@ -1,159 +1,149 @@
-import base64
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 import os
 import subprocess
-import svgwrite
 
-# For alert messages
-# Bottom message should be no more than 60 characters total. If larger than 60 characters
-# then take 56 characters and append " ..."
 
-STYLES = """.conditions { font-family: sans-serif; font-size: 18px; font-weight: bold; fill: black; }
-.message { font-family: monospace; font-size: 18px; font-weight: bold; fill: black; }
-.last-updated { font-family: sans-serif; font-size: 12px; font-weight: 900; fill: black; }
-.temperature { font-family: sans-serif; font-size: 80px; font-weight: bold; text-transform: uppercase; fill: black; }"""
+def get_fortune():
+    fortune_out = subprocess.Popen(['/usr/games/fortune'],
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.STDOUT)
+    f_stdout, f_stderr = fortune_out.communicate()
+    fortune = f_stdout.decode('utf-8')
+    return fortune
+
+
+def process_message(
+        drawing: ImageDraw,
+        message_text: str,
+        font: ImageFont,
+        line_spacing: int,
+        max_width: int,
+        max_lines: int):
+    message_text = message_text.replace('\r\n', ' ')
+    message_text = message_text.replace('\n', ' ')
+    message_text = message_text.replace('  ', ' ')
+    number_of_lines = 1
+    lw, lh = drawing.multiline_textsize(text=message_text, font=font, spacing=line_spacing)
+
+    if lw > max_width:
+        message_words = message_text.split()
+        message_text = ''
+        has_more_text = True
+        while has_more_text:
+            for i in range(0 , len(message_words)):
+                line = ' '.join(message_words[0:i + 1])
+                lw, lh = drawing.multiline_textsize(text=line, font=font, spacing=line_spacing)
+                if lw > max_width:
+                    line = ' '.join(message_words[:i - 1])
+                    message_text += f'{line}\n'
+                    number_of_lines += 1
+                    if number_of_lines > max_lines:
+                        has_more_text = False
+                        message_text = f'{message_text[:len(message_text) - 3]}...'
+                        break
+                    message_words = message_words[i - 1:]
+                    line = ' '.join(message_words)
+                    lw, lh = drawing.multiline_textsize(text=line, font=font, spacing=line_spacing)
+                    if lw <= max_width:
+                        has_more_text = False
+                        message_text += f'{line}'
+                        break
+                    break
+
+    lw, lh = drawing.multiline_textsize(text=message_text, font=font, spacing=line_spacing)
+    number_of_lines = message_text.count('\n') + 1
+    return message_text, number_of_lines, lw, lh
 
 
 class ImageGenerator(object):
 
-    def __init__(self, config):
-        self.__img_width = int(config['imageParams']['width'])
-        self.__img_height = int(config['imageParams']['height'])
-        self.__img_profile = config['imageParams']['profile']
-
-    def draw_black_layer(self):
+    def __init__(self):
+        self.__temp_fnt = ImageFont.truetype('/usr/share/fonts/truetype/noto/NotoSans-Bold.ttf', 80)
+        self.__cond_fnt = ImageFont.truetype('/usr/share/fonts/truetype/noto/NotoSans-Bold.ttf', 28)
+        self.__cc_fnt = ImageFont.truetype('/usr/share/fonts/truetype/noto/NotoSans-Bold.ttf', 18)
+        self.__alert_fnt = ImageFont.truetype('/usr/share/fonts/truetype/noto/NotoSans-Bold.ttf', 70)
         pass
 
-    def draw_red_layer(self):
-        pass
+    def draw_black_layer(self, **kwargs):
+        icon_path = kwargs.get('icon_path')
+        temperature = kwargs.get('temperature')
+        curr_conds = kwargs.get('curr_conds')
+        feels_like = kwargs.get('feels_like')
+        rel_hum = kwargs.get('rel_hum')
+        pressure = kwargs.get('pressure')
+        wind_speed = kwargs.get('wind_speed')
+        wind_dir = kwargs.get('wind_dir')
+        sunrise = kwargs.get('sunrise')
+        sunset = kwargs.get('sunset')
+        updated = kwargs.get('updated')
+        message = kwargs.get('message', '')
+        save_path = kwargs.get('save_path')
 
-    def get_main_drawing_container(self, image_path):
-        main_drawing = svgwrite.Drawing(image_path, size=(self.__img_width, self.__img_height), profile=self.__img_profile)
-        main_drawing.viewbox(minx=0, miny=0, width=self.__img_width, height=self.__img_height)
-        return main_drawing
+        # create an image
+        img = Image.new(mode='L', size=(630, 374), color=255)
 
-    def draw_sample_svg(self, image_path):
-        desktop = '/home/jbales/dev/test_images'
+        png = Image.open(icon_path)
 
-        main_image_svg = os.path.join(desktop, 'test.svg')
-        print(main_image_svg)
+        img.paste(png, (20, 15), png)
 
-        # bottom_bar = svgwrite.Drawing(bottom_image, size=(640, 84), x=0, y=0)
-        # bottom_bar.viewbox(minx=0, miny=0, width=640, height=84)
-        # bottom_bar.add(bottom_bar.text('There are currently no weather alerts for your location.',
-        #                                insert=('50%', '50%'),
-        #                                stroke='none',
-        #                                fill='black',
-        #                                font_size='18px',
-        #                                font_weight='bold',
-        #                                font_family='sans-serif',
-        #                                dominant_baseline='middle',
-        #                                text_anchor='middle'))
-        # bottom_bar.save()
+        # get a drawing context
+        d = ImageDraw.Draw(img)
 
-        left_top_width = int(self.__img_width * 0.375)
-        right_top_width = self.__img_width - left_top_width
+        # draw lines
+        d.line(xy=[(240, 0), (240, 300)], fill=0, width=5)
+        d.line(xy=[(0, 300), (640, 300)], fill=0, width=5)
 
-        top_height = int(self.__img_height * 0.78125)
-        bottom_height = self.__img_height - top_height
+        # draw multiline text
+        w, h = d.textsize(temperature, font=self.__temp_fnt)
+        x_coord = (240 - w) / 2
+        d.multiline_text((x_coord, 190), f'{temperature}°', font=self.__temp_fnt)
+        d.multiline_text((260, 12), 'Current Conditions:', font=self.__cc_fnt)
+        d.multiline_text((260, 32), curr_conds, font=self.__cond_fnt)
+        d.multiline_text((260, 80), f'Feels Like: {feels_like}°', font=self.__cc_fnt)
+        d.multiline_text((260, 102), f'Relative Humidity: {rel_hum}%', font=self.__cc_fnt)
+        d.multiline_text((260, 124), f'Barometric Pressure: {pressure} inches', font=self.__cc_fnt)
+        d.multiline_text((260, 146), f'Wind Speed: {wind_speed} mph', font=self.__cc_fnt)
+        d.multiline_text((260, 168), f'Wind Direction: {wind_dir}', font=self.__cc_fnt)
+        d.multiline_text((260, 204), f'Sunrise: {sunrise}', font=self.__cc_fnt)
+        d.multiline_text((260, 226), f'Sunset: {sunset}', font=self.__cc_fnt)
+        d.multiline_text((260, 262), f'Updated at: {updated}', font=self.__cc_fnt)
 
-        main_drawing = svgwrite.Drawing(main_image_svg, size=(self.__img_width, self.__img_height))
-        main_drawing.add(svgwrite.shapes.Rect(insert=(0, 0), size=(self.__img_width, self.__img_height), stroke='black', stroke_width=10, fill='none'))
+        # bottom message
+        if len(message) > 0:
+            msg, lines, width, height = process_message(drawing=d, message_text=message, font=self.__cc_fnt, line_spacing=3,
+                                                        max_width=616, max_lines=3)
+            x_coord = (630 - width) / 2
+            y_coord = (74 - height) / 2 + 298
+            d.multiline_text(xy=(x_coord, y_coord), text=msg, font=self.__cc_fnt, spacing=3)
 
-        top_left_g = main_drawing.g() # Can we method chain these and be less verbose?
-        top_right_g = main_drawing.g()
-        bottom_g = main_drawing.g()
+        # add the border
+        with_border = ImageOps.expand(image=img, border=5, fill='black')
 
-        main_drawing.add(top_left_g)
-        main_drawing.add(top_right_g)
-        main_drawing.add(bottom_g)
+        # save it out
+        saved_file = os.path.join(save_path, 'img_black.bmp')
+        with_border.save(fp=saved_file)
+        return saved_file
 
-        top_left_svg = svgwrite.container.SVG(insert=(0, 0), size=(left_top_width, top_height))
-        top_right_svg = svgwrite.container.SVG(insert=(left_top_width, 0), size=(right_top_width, top_height))
-        bottom_svg = svgwrite.container.SVG(insert=(0, top_height), size=(self.__img_width, bottom_height))
+    def draw_red_layer(self, **kwargs):
+        message = kwargs.get('message', '')
+        save_path = kwargs.get('save_path')
 
-        top_left_g.add(top_left_svg)
-        top_right_g.add(top_right_svg)
-        bottom_g.add(bottom_svg)
+        # create an image
+        img = Image.new(mode='L', size=(640, 384), color=255)
 
-        # Left Panel Stuff
-        top_left_svg.add(svgwrite.shapes.Line(start=(0, top_height), end=(left_top_width, top_height), stroke='black', stroke_width=5))
-        top_left_svg.add(svgwrite.shapes.Line(start=(left_top_width, 0), end=(left_top_width, top_height), stroke='black', stroke_width=5))
-        temperature_text = svgwrite.text.Text('108°', x=['50%'], y=['50%'], dominant_baseline='middle',
-                                              text_anchor='middle', class_="temperature", font_size='80px')
-        top_left_svg.add(temperature_text);
-        base64_weather_icon = base64.b64encode(open(image_path, 'rb').read())
-        conditions_image = svgwrite.image.Image(href=f"data:image/png;base64,{base64_weather_icon.decode('utf-8')}")
-        top_left_svg.add(conditions_image);
+        # get a drawing context
+        d = ImageDraw.Draw(img)
 
-        # Right Panel Stuff
-        top_right_svg.add(svgwrite.shapes.Line(start=(0, top_height), end=(right_top_width, top_height), stroke='black', stroke_width=5))
-        top_right_svg.add(svgwrite.shapes.Line(start=(0, 0), end=(0, top_height), stroke='black', stroke_width=5))
+        # draw the stuff
+        msg, lines, width, height = process_message(drawing=d, message_text=message, font=self.__cc_fnt, line_spacing=3,
+                                                    max_width=390, max_lines=3)
+        d.rectangle(xy=[(8, 306), (232, 370)], fill='black')
+        d.multiline_text(xy=(13, 288), text='ALERT', font=self.__alert_fnt, fill='white')
+        x_coord = (390 - width) / 2 + 242
+        y_coord = (74 - height) / 2 + 298
+        d.multiline_text(xy=(x_coord, y_coord), text=msg, font=self.__cc_fnt, spacing=3, fill='black')
 
-        # Bottom Panel Stuff
-        fortune_out = subprocess.Popen(['/usr/games/fortune'],
-                                 stdout=subprocess.PIPE,
-                                 stderr=subprocess.STDOUT)
-        f_stdout, f_stderr = fortune_out.communicate()
-        fortune = f_stdout.decode('utf-8')
-        fortune = fortune.replace('\n', '')
-        fortune = fortune.replace('\t', ' ')
-        fortune = fortune.replace('  ', ' ')
-        print(f_stdout)
-        print(fortune)
-        print(f_stderr)
-        bottom_svg.add(svgwrite.shapes.Line(start=(0, 0), end=(self.__img_width, 0), stroke='black', stroke_width=5))
-        bottom_svg.add(svgwrite.text.Text(fortune, x=['50%'], y=['50%'], dominant_baseline='middle',
-                                              text_anchor='middle', class_='message'))
-
-
-        # left_top_svg = svgwrite.container.SVG(insert=(0, 0), size=(400, 300))
-        #
-        # base64_weather_icon = base64.b64encode(open(image_path, 'rb').read())
-        #
-        # conditions_image = svgwrite.image.Image(href=f"data:image/png;base64,{base64_weather_icon.decode('utf-8')}")
-        # left_top_svg.add(conditions_image)
-        # left_top_g.add(left_top_svg)
-        #
-        # right_top_g = svgwrite.container.Group()
-        # right_top_svg = svgwrite.container.SVG(insert=(400, 0), size=(240, 300))
-        # # Note that x and y must be sent as lists here because in the W3C spec it's a list and
-        # # since class is a reserved word, we have to add an underscore behind it
-        # temperature_text = svgwrite.text.Text('108°', x=['50%'], y=['50%'], dominant_baseline='middle', text_anchor='middle', class_="temperature")
-        # right_top_svg.add(temperature_text)
-        # right_top_g.add(right_top_svg)
-        #
-        # rt_top_g = svgwrite.container.Group()
-        # rt_top_svg = svgwrite.container.SVG(insert=(0, 0), size=(240, 200))
-        # # rt_top_svg.add(svgwrite.shapes.Rect(insert=(0, 0), size=(240, 200), stroke='green', stroke_width=20, fill='none'))
-        # rt_top_g.add(rt_top_svg)
-        #
-        # rt_bottom_g = svgwrite.container.Group()
-        # rt_bottom_svg = svgwrite.container.SVG(insert=(0, 180), size=(240, 100))
-        # rt_bottom_g.add(rt_bottom_svg)
-        #
-        # right_top_svg.add(rt_top_g)
-        # right_top_svg.add(rt_bottom_g)
-
-        main_drawing.viewbox(minx=0, miny=0, width=self.__img_width, height=self.__img_height)
-        # main_drawing.add(main_drawing.polyline(points=[(0, 0), (self.__img_width, 0), (self.__img_width, self.__img_height), (0, self.__img_height), (0, 0)], stroke='black',
-        #                                        stroke_width=10, fill='none'))
-
-        bottom_line_height = int(self.__img_height * 0.78125)
-        side_line_width = int(self.__img_width * 0.625)
-
-        # main_drawing.add(
-        #     main_drawing.polyline(points=[(0, bottom_line_height), (self.__img_width, bottom_line_height), (self.__img_width, 0), (side_line_width, 0), (side_line_width, bottom_line_height)], stroke='black',
-        #                           stroke_width=5, fill='none'))
-
-        main_drawing.defs.add(main_drawing.style(STYLES))
-        main_drawing.save()
-
-        main_image_png = os.path.join(desktop, 'test.png')
-
-        imagemagick_out = subprocess.Popen(['/usr/bin/convert', main_image_svg, main_image_png],
-                                       stdout=subprocess.PIPE,
-                                       stderr=subprocess.STDOUT)
-        im_stdout, im_stderr = imagemagick_out.communicate()
-        print(im_stdout)
-        print(im_stderr)
-
+        # save it out
+        saved_file = os.path.join(save_path, 'img_red.bmp')
+        img.save(fp=saved_file)
+        return saved_file

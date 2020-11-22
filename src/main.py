@@ -44,11 +44,6 @@ try:
     print(json.dumps(ca_json))
     ca_result = conditions_and_alerts_from_dict(ca_json)
 
-    image_path = wa.get_weather_icon(icon_code=ca_result.current.weather[0].icon)
-    print(image_path)
-
-    df = ImageGenerator(config)
-    df.draw_sample_svg(image_path)
 
 except Exception as ex:
     logging.exception(ex)
