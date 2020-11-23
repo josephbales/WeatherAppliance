@@ -1,11 +1,9 @@
-import json
 import logging
 import os
 import tempfile
 import yaml
 
 from src.image_generator import ImageGenerator
-from src.models.conditions_and_alerts import conditions_and_alerts_from_dict
 from src.weather_api import WeatherApi
 
 config_file = open('config.yaml', 'r')
@@ -40,10 +38,35 @@ try:
     # print(cc_json)
     # cc_result = current_conditions_from_dict(cc_json)
 
-    ca_json = wa.get_current_with_alerts(**ca_params)
-    print(json.dumps(ca_json))
-    ca_result = conditions_and_alerts_from_dict(ca_json)
+    c_and_a = wa.get_current_with_alerts(**ca_params)
+    print(c_and_a.lat)
 
+    black_image_params = {
+        'icon_path': '/home/jbales/dev/test_images/wi-day-cloudy.png',
+        'temperature': '107',
+        'curr_conds': 'Partly Cloudy',
+        'feels_like': '88',
+        'rel_hum': '45',
+        'pressure': '29.92',
+        'wind_speed': '5',
+        'wind_dir': 'E',
+        'sunrise': '07:26:59 CST',
+        'sunset': '19:26:59 CST',
+        'updated': '2020-11-17 19:26:59 CST',
+        'message': "He who laughs last didn't get the joke.",
+        'save_path': '/home/jbales/dev/test_images'
+    }
+
+    ig = ImageGenerator()
+    ig.draw_black_image(**black_image_params)
+
+    red_image_params = {
+        # 'message': "Severe Thunderstorm Warning, Tornado Watch, Flash Flood Watch, Winter Weather Advisory",
+        'message': "X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O X O.",
+        'save_path': '/home/jbales/dev/test_images'
+    }
+
+    ig.draw_red_image(**red_image_params)
 
 except Exception as ex:
     logging.exception(ex)

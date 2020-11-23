@@ -64,7 +64,7 @@ class ImageGenerator(object):
         self.__alert_fnt = ImageFont.truetype('/usr/share/fonts/truetype/noto/NotoSans-Bold.ttf', 70)
         pass
 
-    def draw_black_layer(self, **kwargs):
+    def draw_black_image(self, **kwargs) -> str:
         icon_path = kwargs.get('icon_path')
         temperature = kwargs.get('temperature')
         curr_conds = kwargs.get('curr_conds')
@@ -95,7 +95,7 @@ class ImageGenerator(object):
 
         # draw multiline text
         w, h = d.textsize(temperature, font=self.__temp_fnt)
-        x_coord = (240 - w) / 2
+        x_coord = (215 - w) / 2
         d.multiline_text((x_coord, 190), f'{temperature}°', font=self.__temp_fnt)
         d.multiline_text((260, 12), 'Current Conditions:', font=self.__cc_fnt)
         d.multiline_text((260, 32), curr_conds, font=self.__cond_fnt)
@@ -124,7 +124,8 @@ class ImageGenerator(object):
         with_border.save(fp=saved_file)
         return saved_file
 
-    def draw_red_layer(self, **kwargs):
+
+    def draw_red_image(self, **kwargs) -> str:
         message = kwargs.get('message', '')
         save_path = kwargs.get('save_path')
 
@@ -135,13 +136,14 @@ class ImageGenerator(object):
         d = ImageDraw.Draw(img)
 
         # draw the stuff
-        msg, lines, width, height = process_message(drawing=d, message_text=message, font=self.__cc_fnt, line_spacing=3,
-                                                    max_width=390, max_lines=3)
-        d.rectangle(xy=[(8, 306), (232, 370)], fill='black')
-        d.multiline_text(xy=(13, 288), text='ALERT', font=self.__alert_fnt, fill='white')
-        x_coord = (390 - width) / 2 + 242
-        y_coord = (74 - height) / 2 + 298
-        d.multiline_text(xy=(x_coord, y_coord), text=msg, font=self.__cc_fnt, spacing=3, fill='black')
+        if len(message) > 0:
+            msg, lines, width, height = process_message(drawing=d, message_text=message, font=self.__cc_fnt, line_spacing=3,
+                                                        max_width=390, max_lines=3)
+            d.rectangle(xy=[(13, 311), (237, 375)], fill='black')
+            d.multiline_text(xy=(18, 293), text='ALERT', font=self.__alert_fnt, fill='white')
+            x_coord = (400 - width) / 2 + 242
+            y_coord = (84 - height) / 2 + 298
+            d.multiline_text(xy=(x_coord, y_coord), text=msg, font=self.__cc_fnt, spacing=3, fill='black')
 
         # save it out
         saved_file = os.path.join(save_path, 'img_red.bmp')

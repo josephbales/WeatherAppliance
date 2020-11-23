@@ -5,7 +5,13 @@ A set of python scripts I plan to use to drive a little weather display applianc
 
 Cut me some slack, I am a C# developer trying to write python 😃
 
+[Waveshare Docs](https://www.waveshare.com/wiki/7.5inch_e-Paper_HAT_(B))
+
 - sudo apt install noto-fonts
+- sudo apt install libopenjp2-7
+- sudo apt install libtiff5
+- sudo pip3 install RPi.GPIO
+- sudo pip3 install spidev
 - sudo pip3 install [Pillow](https://pypi.org/project/Pillow/)
 - sudo pip3 install [pyyamml](https://pypi.org/project/PyYAML/)
 
