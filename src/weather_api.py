@@ -20,6 +20,13 @@ def get_request_bytes(url, headers=None, params=None):
     else:
         return None
 
+# https://stackoverflow.com/a/7490772
+# Courtesy had3s_za from Twitch
+def translate_wind_dir(degrees: float) -> str:
+    val = int((degrees / 22.5) + .5)
+    arr = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
+    return arr[(val % 16)]
+
 
 class WeatherApi(object):
 
